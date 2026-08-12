@@ -377,7 +377,9 @@ GitHub Actions are configured for pull requests and merges to `main`:
 - `Release Artifact`: validates and uploads a plugin package when a `v*` tag is
   pushed.
 
-Dependabot is configured for weekly npm and GitHub Actions updates.
+Dependabot is configured for weekly npm and GitHub Actions updates. Major
+updates to the TypeScript test/build toolchain are kept manual so dependency
+PRs do not jump ahead of peer-dependency support.
 
 For GitHub-side enforcement, enable branch protection or repository rulesets on
 `main` and require these checks: `quality`, `analyze`, `dependency-review`, and
