@@ -1,7 +1,7 @@
 {
   "name": "openclaw-plugin-kai-youtube-operator",
-  "version": "0.1.0",
-  "description": "OpenClaw plugin for safe YouTube channel and live-stream management workflows for Kai.",
+  "version": "0.2.0",
+  "description": "OpenClaw plugin for safe YouTube Studio, channel, live-stream, and short-video editing workflows for Kai.",
   "license": "MIT",
   "type": "module",
   "private": true,
