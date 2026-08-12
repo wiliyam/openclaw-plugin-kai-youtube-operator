@@ -1,0 +1,30 @@
+{
+  "id": "kai-youtube-operator",
+  "name": "Kai YouTube Operator",
+  "description": "Safe YouTube channel, OAuth, live broadcast, and live chat tools for Kai.",
+  "version": "0.1.0",
+  "configSchema": {
+    "type": "object",
+    "properties": {},
+    "additionalProperties": false
+  },
+  "activation": {
+    "onStartup": true
+  },
+  "contracts": {
+    "tools": [
+      "kai_youtube_setup_status",
+      "kai_youtube_oauth_url",
+      "kai_youtube_oauth_exchange",
+      "kai_youtube_channel_overview",
+      "kai_youtube_live_plan",
+      "kai_youtube_live_broadcasts",
+      "kai_youtube_live_create_broadcast",
+      "kai_youtube_live_update_broadcast",
+      "kai_youtube_live_transition",
+      "kai_youtube_live_chat_messages",
+      "kai_youtube_live_chat_send",
+      "kai_youtube_live_chat_delete"
+    ]
+  }
+}
