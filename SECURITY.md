@@ -25,6 +25,7 @@ Recommended required checks for `main`:
 - `analyze`
 - `dependency-review`
 - `gitleaks`
+- `scorecard`
 
 Recommended branch rules:
 

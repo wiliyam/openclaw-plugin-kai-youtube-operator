@@ -390,10 +390,10 @@ updates to the TypeScript test/build toolchain are kept manual so dependency
 PRs do not jump ahead of peer-dependency support.
 
 For GitHub-side enforcement, enable branch protection or repository rulesets on
-`main` and require these checks: `quality`, `analyze`, `dependency-review`, and
-`gitleaks`. Also enable GitHub secret scanning, push protection, Dependabot
-alerts, Dependabot security updates, CodeQL code scanning, and OpenSSF
-Scorecard in repository security settings.
+`main` and require these checks: `quality`, `analyze`, `dependency-review`,
+`gitleaks`, and `scorecard`. Also enable GitHub secret scanning, push
+protection, Dependabot alerts, Dependabot security updates, CodeQL code
+scanning, and OpenSSF Scorecard in repository security settings.
 
 GitHub Copilot or other coding agents should follow `AGENTS.md`,
 `.github/copilot-instructions.md`, and the `Agent task` issue template.
