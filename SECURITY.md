@@ -49,7 +49,10 @@ Never commit:
 
 ## Security Tooling
 
-- `npm run security:prod` audits production dependencies.
+- `npm run security` audits the full committed dependency graph.
+- `npm run security:prod` audits production dependencies only.
+- `npm run plugin:validate` verifies the built plugin contract without adding
+  the OpenClaw CLI to the committed dependency graph.
 - `.github/workflows/dependency-review.yml` blocks vulnerable dependency changes on pull requests.
 - `.github/workflows/codeql.yml` runs CodeQL security and quality queries.
 - `.github/workflows/secret-scan.yml` scans committed history with Gitleaks.

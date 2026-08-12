@@ -55,8 +55,8 @@ jobs:
       - name: Validate OpenClaw plugin
         run: npm run plugin:validate
 
-      - name: Production dependency audit
-        run: npm run security:prod
+      - name: Dependency audit
+        run: npm run security
 
       - name: Verify generated files are committed
         run: git diff --exit-code -- dist openclaw.plugin.json package.json package-lock.json

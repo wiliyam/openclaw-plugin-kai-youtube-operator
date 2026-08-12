@@ -2,7 +2,7 @@ import { randomBytes } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { Type } from "typebox";
-import type { DefineToolPluginOptions } from "openclaw/plugin-sdk/tool-plugin";
+import type { DefineToolPluginOptions } from "./openclaw-tool-plugin.js";
 import { youtubeAnalyticsRequest, youtubeCaptionDownload, youtubeMediaUploadRequest, youtubeMultipartUploadRequest, youtubeRequest } from "./api.js";
 import { DEFAULT_SHORTS_DIR, TOKEN_PATH } from "./constants.js";
 import { inferMimeType } from "./mime.js";

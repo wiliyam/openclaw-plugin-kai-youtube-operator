@@ -29,7 +29,7 @@ helpers, `src/media.ts` for ffmpeg/ffprobe/espeak-ng helpers, and
 each source module should have a matching `test/<module>.test.ts` file. Avoid
 loose types such as `any`; prefer `unknown`, narrow unions, and shared types
 from `src/types.ts`. Before release or PR handoff, run lint, quality, tests,
-build, plugin validation, and production dependency audit.
+build, plugin validation, and dependency audit.
 
 ## First Steps
 

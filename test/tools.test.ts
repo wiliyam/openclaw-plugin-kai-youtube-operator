@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { DefineToolPluginOptions } from "openclaw/plugin-sdk/tool-plugin";
+import type { DefineToolPluginOptions } from "../src/openclaw-tool-plugin.js";
 import { createYoutubeTools } from "../src/tools.js";
 
 type ToolFactory = Parameters<DefineToolPluginOptions["tools"]>[0];

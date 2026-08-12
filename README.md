@@ -314,7 +314,15 @@ npm run quality
 npm test
 npm run build
 npm run plugin:validate
+npm run security
 npm run security:prod
+```
+
+If the OpenClaw CLI is already installed on the machine, run the runtime
+validator too:
+
+```sh
+npm run plugin:validate:openclaw
 ```
 
 Build the plugin package:
@@ -364,8 +372,8 @@ New large features should be added as focused modules instead of growing
 
 GitHub Actions are configured for pull requests and merges to `main`:
 
-- `CI`: lint, project quality rules, tests, TypeScript build, OpenClaw plugin
-  validation, GitHub workflow linting, production dependency audit, and
+- `CI`: lint, project quality rules, tests, TypeScript build, plugin contract
+  validation, GitHub workflow linting, dependency audit, and
   generated-file drift checks.
 - `CodeQL`: JavaScript/TypeScript static analysis with the
   `security-and-quality` query suite.
@@ -402,7 +410,7 @@ Before opening a pull request:
    credential files.
 2. Add or update tests for behavior changes.
 3. Run `npm run lint`, `npm run quality`, `npm test`, `npm run build`,
-   `npm run plugin:validate`, and `npm run security:prod`.
+   `npm run plugin:validate`, and `npm run security`.
 4. Keep destructive or public actions approval-gated.
 5. Update this README and `skills/kai-youtube-operator/SKILL.md` when tool names
    or workflows change.

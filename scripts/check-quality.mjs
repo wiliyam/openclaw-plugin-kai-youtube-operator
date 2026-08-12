@@ -6,7 +6,8 @@ const sourceDir = path.join(root, "src");
 const testDir = path.join(root, "test");
 const scriptDir = path.join(root, "scripts");
 
-const sourceFiles = (await readdir(sourceDir)).filter((file) => file.endsWith(".ts")).sort();
+const sourceFiles = (await readdir(sourceDir)).filter((file) => file.endsWith(".ts") && !file.endsWith(".d.ts")).sort();
+const declarationFiles = (await readdir(sourceDir)).filter((file) => file.endsWith(".d.ts")).sort();
 const testFiles = (await readdir(testDir)).filter((file) => file.endsWith(".test.ts")).sort();
 const failures = [];
 
@@ -31,6 +32,13 @@ for (const file of sourceFiles) {
 
   const source = await readFile(sourcePath, "utf8");
   if (/\bany\b|Type\.Any|as any|Record<string,\s*any>|unknown as/.test(source)) {
+    fail(`Loose type pattern found in src/${file}`);
+  }
+}
+
+for (const file of declarationFiles) {
+  const declaration = await readFile(path.join(sourceDir, file), "utf8");
+  if (/\bany\b|Type\.Any|as any|Record<string,\s*any>|unknown as/.test(declaration)) {
     fail(`Loose type pattern found in src/${file}`);
   }
 }
@@ -104,6 +112,9 @@ for (const target of scanRoots) {
 const scriptFiles = await readdir(scriptDir).catch(() => []);
 if (!scriptFiles.includes("check-quality.mjs")) {
   fail("Missing scripts/check-quality.mjs");
+}
+if (!scriptFiles.includes("validate-plugin.mjs")) {
+  fail("Missing scripts/validate-plugin.mjs");
 }
 
 if (failures.length > 0) {

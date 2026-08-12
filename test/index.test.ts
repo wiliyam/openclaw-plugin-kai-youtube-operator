@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getToolPluginMetadata } from "openclaw/plugin-sdk/tool-plugin";
+import { getToolPluginMetadata } from "../src/openclaw-tool-plugin.js";
 import plugin from "../src/index.js";
 
 describe("plugin entrypoint", () => {

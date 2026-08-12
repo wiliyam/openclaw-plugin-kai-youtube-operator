@@ -7,12 +7,14 @@
   "private": true,
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "ci": "npm run lint && npm run quality && npm test && npm run build && npm run plugin:validate && npm run security:prod",
+    "ci": "npm run lint && npm run quality && npm test && npm run build && npm run plugin:validate && npm run security",
     "hooks:install": "git config core.hooksPath .githooks",
     "lint": "eslint .",
-    "plugin:build": "npm run build && openclaw plugins build --root . --entry ./dist/index.js",
-    "plugin:validate": "npm run build && openclaw plugins validate --root . --entry ./dist/index.js",
+    "plugin:build": "npm run build && node scripts/validate-plugin.mjs",
+    "plugin:validate": "npm run build && node scripts/validate-plugin.mjs",
+    "plugin:validate:openclaw": "npm run build && openclaw plugins validate --root . --entry ./dist/index.js",
     "quality": "node scripts/check-quality.mjs",
+    "security": "npm audit --audit-level=high",
     "security:prod": "npm audit --omit=dev --audit-level=high",
     "test": "vitest run --config ./vitest.config.ts"
   },
@@ -25,6 +27,11 @@
   "peerDependencies": {
     "openclaw": ">=2026.5.17"
   },
+  "peerDependenciesMeta": {
+    "openclaw": {
+      "optional": true
+    }
+  },
   "dependencies": {
     "typebox": "^1.1.38"
   },
@@ -33,7 +40,6 @@
     "@types/node": "^24.0.0",
     "eslint": "^10.8.1",
     "globals": "^17.10.0",
-    "openclaw": "latest",
     "typescript": "^5.9.0",
     "typescript-eslint": "^8.67.0",
     "vitest": "^3.2.0"

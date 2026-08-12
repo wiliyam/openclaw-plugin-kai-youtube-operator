@@ -1,4 +1,4 @@
-import { defineToolPlugin } from "openclaw/plugin-sdk/tool-plugin";
+import { defineToolPlugin } from "./openclaw-tool-plugin.js";
 import { createYoutubeTools } from "./tools.js";
 export * from "./types.js";
 export { YOUTUBE_SCOPES } from "./constants.js";

@@ -22,8 +22,8 @@ Prefer official YouTube APIs and local media tools over browser automation.
   manipulation.
 - Keep tests modular: every `src/<module>.ts` file must have a matching
   `test/<module>.test.ts` file.
-- Run lint, quality, tests, build, plugin validation, and production dependency
-  audit before claiming a change is ready.
+- Run lint, quality, tests, build, plugin validation, and dependency audit
+  before claiming a change is ready.
 
 ## Repository Shape
 
@@ -62,9 +62,13 @@ npm run quality
 npm test
 npm run build
 npm run plugin:validate
+npm run security
 npm run security:prod
 npm run hooks:install
 ```
+
+Use `npm run plugin:validate:openclaw` as an extra runtime check on machines
+where the OpenClaw CLI is already installed.
 
 ## Adding Tools
 
@@ -77,7 +81,7 @@ When adding a new tool:
 5. Update `skills/kai-youtube-operator/SKILL.md`.
 6. Add or update the matching module test file.
 7. Run `npm run lint`, `npm run quality`, `npm test`, `npm run build`,
-   `npm run plugin:validate`, and `npm run security:prod`.
+   `npm run plugin:validate`, and `npm run security`.
 
 ## YouTube API Guidance
 

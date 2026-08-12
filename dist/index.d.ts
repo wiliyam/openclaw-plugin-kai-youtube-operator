@@ -8,5 +8,5 @@ export { buildAudioMixArgs, buildGeneratedAudioArgs, buildShortCreateArgs, build
 export { buildLivePlan, studioCapabilities } from "./studio.js";
 export { buildCreateBroadcastBody, buildVideoUpdateBody } from "./youtube-bodies.js";
 export { buildManagerBrief, buildProductionChecklist, buildUploadPacketFromContent, createApprovalRequest, createDefaultManagerState, resolveApprovalRequest, triageComments, upsertBrandKit, upsertContentItem, } from "./manager.js";
-declare const _default: import("openclaw/plugin-sdk/tool-plugin").DefinedToolPluginEntry;
+declare const _default: import("./openclaw-tool-plugin.js").DefinedToolPluginEntry;
 export default _default;
