@@ -1,6 +1,6 @@
 import { youtubeRequest } from "./api.js";
-export async function getBroadcastById(id) {
-    const result = await youtubeRequest("GET", "liveBroadcasts", {
+export async function getBroadcastById(id, request = youtubeRequest) {
+    const result = await request("GET", "liveBroadcasts", {
         part: "id,snippet,status,contentDetails",
         id,
     });
@@ -9,8 +9,8 @@ export async function getBroadcastById(id) {
         throw new Error(`No live broadcast found for id ${id}.`);
     return item;
 }
-export async function getVideoById(id) {
-    const result = await youtubeRequest("GET", "videos", {
+export async function getVideoById(id, request = youtubeRequest) {
+    const result = await request("GET", "videos", {
         part: "id,snippet,status,recordingDetails,localizations",
         id,
     });
@@ -19,8 +19,8 @@ export async function getVideoById(id) {
         throw new Error(`No video found for id ${id}.`);
     return item;
 }
-export async function getChannelForBrandingUpdate() {
-    const result = await youtubeRequest("GET", "channels", {
+export async function getChannelForBrandingUpdate(request = youtubeRequest) {
+    const result = await request("GET", "channels", {
         part: "id,brandingSettings",
         mine: true,
     });
@@ -29,8 +29,8 @@ export async function getChannelForBrandingUpdate() {
         throw new Error("No authorized channel found.");
     return item;
 }
-export async function getPlaylistById(id) {
-    const result = await youtubeRequest("GET", "playlists", {
+export async function getPlaylistById(id, request = youtubeRequest) {
+    const result = await request("GET", "playlists", {
         part: "id,snippet,status,contentDetails",
         id,
     });
@@ -39,8 +39,8 @@ export async function getPlaylistById(id) {
         throw new Error(`No playlist found for id ${id}.`);
     return item;
 }
-export async function getPlaylistItemById(id) {
-    const result = await youtubeRequest("GET", "playlistItems", {
+export async function getPlaylistItemById(id, request = youtubeRequest) {
+    const result = await request("GET", "playlistItems", {
         part: "id,snippet,contentDetails,status",
         id,
     });
@@ -49,8 +49,8 @@ export async function getPlaylistItemById(id) {
         throw new Error(`No playlist item found for id ${id}.`);
     return item;
 }
-export async function getLiveStreamById(id) {
-    const result = await youtubeRequest("GET", "liveStreams", {
+export async function getLiveStreamById(id, request = youtubeRequest) {
+    const result = await request("GET", "liveStreams", {
         part: "id,snippet,cdn,status,contentDetails",
         id,
     });

@@ -1,0 +1,37 @@
+name: Agent task
+description: Scoped task for Kai, Copilot, or another coding agent.
+title: "[Agent] "
+labels:
+  - agent-task
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: Describe the outcome the agent should produce.
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope and constraints
+      description: List files, modules, APIs, safety rules, and approval gates the agent must respect.
+      value: |
+        - Keep code modular.
+        - Add matching module tests.
+        - Do not commit secrets.
+        - Keep high-risk YouTube actions approval-gated.
+    validations:
+      required: true
+  - type: textarea
+    id: checks
+    attributes:
+      label: Required checks
+      value: |
+        - npm run lint
+        - npm run quality
+        - npm test
+        - npm run build
+        - npm run plugin:validate
+    validations:
+      required: true

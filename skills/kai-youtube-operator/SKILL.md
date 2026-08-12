@@ -1,7 +1,7 @@
 ---
 name: Kai YouTube Operator
 slug: kai-youtube-operator
-version: 3.1.0
+version: 3.2.0
 description: Use Kai's installed YouTube operator tools for YouTube Studio, local channel management, brand kit, content calendar, approvals, assets, OAuth, uploads, publishing, videos, Shorts, thumbnails, audio, voiceovers, playlists, comments, captions, analytics, live streams, live chat, and safe channel management.
 metadata:
   openclaw:
@@ -25,9 +25,11 @@ The plugin is modular. Keep `src/index.ts` as the thin entrypoint,
 `src/tools.ts` as the tool wiring layer, `src/schemas.ts` for TypeBox
 parameter schemas, `src/oauth.ts` and `src/api.ts` for YouTube auth/API
 helpers, `src/media.ts` for ffmpeg/ffprobe/espeak-ng helpers, and
-`src/manager.ts` for local channel-manager state. Tests live in `test/`.
-Avoid loose types such as `any`; prefer `unknown`, narrow unions, and shared
-types from `src/types.ts`.
+`src/manager.ts` for local channel-manager state. Tests live in `test/` and
+each source module should have a matching `test/<module>.test.ts` file. Avoid
+loose types such as `any`; prefer `unknown`, narrow unions, and shared types
+from `src/types.ts`. Before release or PR handoff, run lint, quality, tests,
+build, plugin validation, and production dependency audit.
 
 ## First Steps
 

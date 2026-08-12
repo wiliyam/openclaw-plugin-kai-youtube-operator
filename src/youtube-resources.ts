@@ -1,7 +1,15 @@
 import { youtubeRequest } from "./api.js";
+import type { QueryParams, YouTubeRequestMethod } from "./types.js";
 
-export async function getBroadcastById(id: string) {
-  const result = await youtubeRequest<{ items?: Array<Record<string, unknown>> }>("GET", "liveBroadcasts", {
+type YouTubeRequester = <T>(
+  method: YouTubeRequestMethod,
+  resourcePath: string,
+  query?: QueryParams,
+  body?: unknown,
+) => Promise<T>;
+
+export async function getBroadcastById(id: string, request: YouTubeRequester = youtubeRequest) {
+  const result = await request<{ items?: Array<Record<string, unknown>> }>("GET", "liveBroadcasts", {
     part: "id,snippet,status,contentDetails",
     id,
   });
@@ -10,8 +18,8 @@ export async function getBroadcastById(id: string) {
   return item;
 }
 
-export async function getVideoById(id: string) {
-  const result = await youtubeRequest<{ items?: Array<Record<string, unknown>> }>("GET", "videos", {
+export async function getVideoById(id: string, request: YouTubeRequester = youtubeRequest) {
+  const result = await request<{ items?: Array<Record<string, unknown>> }>("GET", "videos", {
     part: "id,snippet,status,recordingDetails,localizations",
     id,
   });
@@ -20,8 +28,8 @@ export async function getVideoById(id: string) {
   return item;
 }
 
-export async function getChannelForBrandingUpdate() {
-  const result = await youtubeRequest<{ items?: Array<Record<string, unknown>> }>("GET", "channels", {
+export async function getChannelForBrandingUpdate(request: YouTubeRequester = youtubeRequest) {
+  const result = await request<{ items?: Array<Record<string, unknown>> }>("GET", "channels", {
     part: "id,brandingSettings",
     mine: true,
   });
@@ -30,8 +38,8 @@ export async function getChannelForBrandingUpdate() {
   return item;
 }
 
-export async function getPlaylistById(id: string) {
-  const result = await youtubeRequest<{ items?: Array<Record<string, unknown>> }>("GET", "playlists", {
+export async function getPlaylistById(id: string, request: YouTubeRequester = youtubeRequest) {
+  const result = await request<{ items?: Array<Record<string, unknown>> }>("GET", "playlists", {
     part: "id,snippet,status,contentDetails",
     id,
   });
@@ -40,8 +48,8 @@ export async function getPlaylistById(id: string) {
   return item;
 }
 
-export async function getPlaylistItemById(id: string) {
-  const result = await youtubeRequest<{ items?: Array<Record<string, unknown>> }>("GET", "playlistItems", {
+export async function getPlaylistItemById(id: string, request: YouTubeRequester = youtubeRequest) {
+  const result = await request<{ items?: Array<Record<string, unknown>> }>("GET", "playlistItems", {
     part: "id,snippet,contentDetails,status",
     id,
   });
@@ -50,8 +58,8 @@ export async function getPlaylistItemById(id: string) {
   return item;
 }
 
-export async function getLiveStreamById(id: string) {
-  const result = await youtubeRequest<{ items?: Array<Record<string, unknown>> }>("GET", "liveStreams", {
+export async function getLiveStreamById(id: string, request: YouTubeRequester = youtubeRequest) {
+  const result = await request<{ items?: Array<Record<string, unknown>> }>("GET", "liveStreams", {
     part: "id,snippet,cdn,status,contentDetails",
     id,
   });

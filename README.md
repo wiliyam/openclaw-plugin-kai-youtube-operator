@@ -309,15 +309,24 @@ npm install
 Run checks:
 
 ```sh
+npm run lint
+npm run quality
 npm test
 npm run build
 npm run plugin:validate
+npm run security:prod
 ```
 
 Build the plugin package:
 
 ```sh
 npm run plugin:build
+```
+
+Install local git hooks for this checkout:
+
+```sh
+npm run hooks:install
 ```
 
 The repo intentionally includes `dist/` because OpenClaw git installs need the
@@ -346,10 +355,38 @@ built entrypoint.
   resources.
 - `src/manager.ts`: local channel-manager state, brand kit, calendar, approvals,
   upload packets, audit log, comment triage, and checklists.
-- `test/index.test.ts`: unit tests for exported helpers and safety behavior.
+- `test/*.test.ts`: module-level Vitest files matching the source modules.
 
 New large features should be added as focused modules instead of growing
 `src/index.ts` or adding unrelated logic to `src/tools.ts`.
+
+## CI/CD and Security
+
+GitHub Actions are configured for pull requests and merges to `main`:
+
+- `CI`: lint, project quality rules, tests, TypeScript build, OpenClaw plugin
+  validation, GitHub workflow linting, production dependency audit, and
+  generated-file drift checks.
+- `CodeQL`: JavaScript/TypeScript static analysis with the
+  `security-and-quality` query suite.
+- `Dependency Review`: blocks pull requests that introduce high-severity
+  vulnerable dependencies.
+- `Secret Scan`: runs Gitleaks against pull requests and `main`.
+- `OpenSSF Scorecard`: checks supply-chain security posture and uploads SARIF
+  to code scanning.
+- `Release Artifact`: validates and uploads a plugin package when a `v*` tag is
+  pushed.
+
+Dependabot is configured for weekly npm and GitHub Actions updates.
+
+For GitHub-side enforcement, enable branch protection or repository rulesets on
+`main` and require these checks: `quality`, `analyze`, `dependency-review`, and
+`gitleaks`. Also enable GitHub secret scanning, push protection, Dependabot
+alerts, Dependabot security updates, CodeQL code scanning, and OpenSSF
+Scorecard in repository security settings.
+
+GitHub Copilot or other coding agents should follow `AGENTS.md`,
+`.github/copilot-instructions.md`, and the `Agent task` issue template.
 
 ## Contributing
 
@@ -362,7 +399,8 @@ Before opening a pull request:
 1. Do not commit `.env`, OAuth secrets, tokens, stream keys, or generated private
    credential files.
 2. Add or update tests for behavior changes.
-3. Run `npm test`, `npm run build`, and `npm run plugin:validate`.
+3. Run `npm run lint`, `npm run quality`, `npm test`, `npm run build`,
+   `npm run plugin:validate`, and `npm run security:prod`.
 4. Keep destructive or public actions approval-gated.
 5. Update this README and `skills/kai-youtube-operator/SKILL.md` when tool names
    or workflows change.

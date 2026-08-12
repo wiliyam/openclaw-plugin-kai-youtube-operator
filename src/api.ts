@@ -148,12 +148,13 @@ export async function youtubeCaptionDownload(params: {
   });
   const text = await response.text();
   if (!response.ok) {
-    let parsed: JsonObject = {};
-    try {
-      parsed = text ? JSON.parse(text) as JsonObject : {};
-    } catch {
-      parsed = { raw: text };
-    }
+    const parsed: JsonObject = (() => {
+      try {
+        return text ? JSON.parse(text) as JsonObject : {};
+      } catch {
+        return { raw: text };
+      }
+    })();
     throw new Error(`Caption download failed: ${sanitizeError(parsed) || response.statusText}`);
   }
   const maxCharacters = params.maxCharacters ?? 20_000;

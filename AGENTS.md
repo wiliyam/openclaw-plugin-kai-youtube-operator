@@ -20,7 +20,10 @@ Prefer official YouTube APIs and local media tools over browser automation.
   for `public` or `unlisted`.
 - Use structured request bodies and typed helpers rather than ad hoc string
   manipulation.
-- Run tests and build before claiming a change is ready.
+- Keep tests modular: every `src/<module>.ts` file must have a matching
+  `test/<module>.test.ts` file.
+- Run lint, quality, tests, build, plugin validation, and production dependency
+  audit before claiming a change is ready.
 
 ## Repository Shape
 
@@ -40,20 +43,27 @@ Prefer official YouTube APIs and local media tools over browser automation.
 - `src/youtube-bodies.ts`: YouTube request-body builders and update mergers.
 - `src/youtube-resources.ts`: fetch helpers for existing YouTube resources.
 - `src/manager.ts`: local channel-manager state and helper functions.
-- `test/index.test.ts`: Vitest coverage for helpers and safety behavior.
+- `test/*.test.ts`: module-level Vitest coverage matching source modules.
 - `openclaw.plugin.json`: plugin metadata and advertised tool contracts.
 - `skills/kai-youtube-operator/SKILL.md`: instructions Kai receives for using
   the installed plugin.
 - `dist/`: built plugin entrypoint. This is intentionally committed because
   OpenClaw git installs need it.
+- `.github/workflows/*.yml`: pull-request, merge, security, and release checks.
+- `.github/copilot-instructions.md`: GitHub Copilot and coding-agent guardrails.
+- `.githooks/`: optional local pre-commit and pre-push checks.
 
 ## Development Commands
 
 ```sh
 npm install
+npm run lint
+npm run quality
 npm test
 npm run build
 npm run plugin:validate
+npm run security:prod
+npm run hooks:install
 ```
 
 ## Adding Tools
@@ -65,8 +75,9 @@ When adding a new tool:
 3. Add the tool name to `openclaw.plugin.json`.
 4. Update `README.md`.
 5. Update `skills/kai-youtube-operator/SKILL.md`.
-6. Add tests for behavior, guardrails, request construction, or redaction.
-7. Run `npm test`, `npm run build`, and `npm run plugin:validate`.
+6. Add or update the matching module test file.
+7. Run `npm run lint`, `npm run quality`, `npm test`, `npm run build`,
+   `npm run plugin:validate`, and `npm run security:prod`.
 
 ## YouTube API Guidance
 
