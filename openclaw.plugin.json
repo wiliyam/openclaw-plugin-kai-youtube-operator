@@ -1,7 +1,7 @@
 {
   "id": "kai-youtube-operator",
   "name": "Kai YouTube Operator",
-  "description": "Safe YouTube Studio, channel, OAuth, live broadcast, live chat, and short-video editing tools for Kai.",
+  "description": "Safe YouTube Studio, channel, video, OAuth, live broadcast, and live chat tools for Kai.",
   "version": "0.2.0",
   "configSchema": {
     "type": "object",
