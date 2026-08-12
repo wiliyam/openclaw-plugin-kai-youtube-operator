@@ -27,7 +27,7 @@ import {
   triageComments,
   upsertBrandKit,
   upsertContentItem,
-} from "./index";
+} from "../src/index.js";
 
 describe("Kai YouTube Operator", () => {
   it("reports OAuth environment without exposing values", () => {

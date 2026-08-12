@@ -118,7 +118,7 @@ The OAuth URL tool supports these capability presets:
 - `full_channel`: broad channel, live, upload, and analytics access.
 
 If you add new tools that need a new scope, update `YOUTUBE_SCOPES` in
-`src/index.ts` and document the change here.
+`src/constants.ts` and document the change here.
 
 ## Tool Catalog
 
@@ -325,12 +325,31 @@ built entrypoint.
 
 ## Code Structure
 
-- `src/index.ts`: OpenClaw tool registration and YouTube API-facing orchestration.
+- `src/index.ts`: thin OpenClaw entrypoint and public re-exports.
+- `src/tools.ts`: tool registration and wiring, grouped around imported helpers.
+- `src/schemas.ts`: TypeBox schemas for tool parameters.
+- `src/types.ts`: shared TypeScript types.
+- `src/constants.ts`: paths, API URLs, OAuth scopes, approval action text, and
+  allowlisted Data API paths.
+- `src/oauth.ts`: OAuth URL generation, token exchange, token storage, and token
+  refresh.
+- `src/api.ts`: authorized YouTube Data, Upload, Caption, and Analytics API
+  requests.
+- `src/safety.ts`: approval gates, redaction, undefined stripping, and generic
+  API allowlist checks.
+- `src/mime.ts`: local MIME inference.
+- `src/media.ts`: ffmpeg, ffprobe, and espeak-ng local media helpers.
+- `src/studio.ts`: capability descriptions and live planning helpers.
+- `src/youtube-bodies.ts`: structured YouTube request-body builders and update
+  mergers.
+- `src/youtube-resources.ts`: small fetch helpers for existing YouTube
+  resources.
 - `src/manager.ts`: local channel-manager state, brand kit, calendar, approvals,
   upload packets, audit log, comment triage, and checklists.
-- `src/index.test.ts`: unit tests for exported helpers and safety behavior.
+- `test/index.test.ts`: unit tests for exported helpers and safety behavior.
 
-New large features should be added as modules instead of growing `index.ts`.
+New large features should be added as focused modules instead of growing
+`src/index.ts` or adding unrelated logic to `src/tools.ts`.
 
 ## Contributing
 

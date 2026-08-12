@@ -24,9 +24,23 @@ Prefer official YouTube APIs and local media tools over browser automation.
 
 ## Repository Shape
 
-- `src/index.ts`: plugin implementation and exported helper functions.
+- `src/index.ts`: thin plugin entrypoint and public helper re-exports.
+- `src/tools.ts`: OpenClaw tool registration and orchestration.
+- `src/schemas.ts`: TypeBox tool parameter schemas.
+- `src/types.ts`: shared TypeScript types.
+- `src/constants.ts`: paths, OAuth scopes, API URLs, approval actions, and
+  allowlists.
+- `src/oauth.ts`: OAuth URL, exchange, storage, and refresh helpers.
+- `src/api.ts`: authorized YouTube API request helpers.
+- `src/safety.ts`: approval gates, redaction, undefined stripping, and allowlist
+  checks.
+- `src/mime.ts`: MIME type inference.
+- `src/media.ts`: ffmpeg, ffprobe, and espeak-ng helpers.
+- `src/studio.ts`: Studio capability and live-planning helpers.
+- `src/youtube-bodies.ts`: YouTube request-body builders and update mergers.
+- `src/youtube-resources.ts`: fetch helpers for existing YouTube resources.
 - `src/manager.ts`: local channel-manager state and helper functions.
-- `src/index.test.ts`: Vitest coverage for helpers and safety behavior.
+- `test/index.test.ts`: Vitest coverage for helpers and safety behavior.
 - `openclaw.plugin.json`: plugin metadata and advertised tool contracts.
 - `skills/kai-youtube-operator/SKILL.md`: instructions Kai receives for using
   the installed plugin.
@@ -47,7 +61,7 @@ npm run plugin:validate
 When adding a new tool:
 
 1. Add a typed helper in a focused module where useful.
-2. Keep `src/index.ts` focused on tool registration and orchestration.
+2. Keep `src/index.ts` as a thin entrypoint; put tool wiring in `src/tools.ts`.
 3. Add the tool name to `openclaw.plugin.json`.
 4. Update `README.md`.
 5. Update `skills/kai-youtube-operator/SKILL.md`.
@@ -58,7 +72,8 @@ When adding a new tool:
 
 - Read tools can run directly after OAuth.
 - Write tools must use `approvalGate`.
-- Generic Data API access must stay allowlisted via `SUPPORTED_DATA_API_PATHS`.
+- Generic Data API access must stay allowlisted via `SUPPORTED_DATA_API_PATHS`
+  in `src/constants.ts`.
 - Uploads are simple uploads only and limited to 512 MB.
 - Large uploads should use YouTube Studio or a future resumable upload feature.
 
@@ -72,7 +87,8 @@ When adding a new tool:
 
 ## Channel Manager Guidance
 
-- Keep planning/state logic in `src/manager.ts` or a focused manager module.
+- Keep planning/state logic in `src/manager.ts` or another focused manager
+  module.
 - The local manager store is `~/Kai/youtube/channel-manager.json`.
 - Manager tools do not directly change YouTube; API tools still handle uploads,
   publishing, live changes, and moderation.

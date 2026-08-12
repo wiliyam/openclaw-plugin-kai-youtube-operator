@@ -52,6 +52,9 @@ require explicit approval through `approved: true`.
 - README and skill instructions are updated for user-visible behavior.
 - Large feature areas live in focused modules instead of being added wholesale
   to `src/index.ts`.
+- Tool parameter schemas live in `src/schemas.ts`, tool wiring lives in
+  `src/tools.ts`, and reusable request/media/manager logic lives in its domain
+  module.
 - No secrets or private generated files are committed.
 
 ## Reporting Issues

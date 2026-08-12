@@ -1,0 +1,15 @@
+import type { OAuthCapability } from "./types.js";
+export declare const DATA_DIR: string;
+export declare const TOKEN_PATH: string;
+export declare const DEFAULT_REDIRECT_URI = "http://127.0.0.1:53682/oauth2callback";
+export declare const GOOGLE_OAUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth";
+export declare const GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
+export declare const YOUTUBE_API_URL = "https://www.googleapis.com/youtube/v3";
+export declare const YOUTUBE_UPLOAD_API_URL = "https://www.googleapis.com/upload/youtube/v3";
+export declare const YOUTUBE_ANALYTICS_API_URL = "https://youtubeanalytics.googleapis.com/v2";
+export declare const MAX_SIMPLE_UPLOAD_BYTES: number;
+export declare const DEFAULT_SHORTS_DIR: string;
+export declare const MAX_SHORT_DURATION_SECONDS = 180;
+export declare const YOUTUBE_SCOPES: Record<OAuthCapability, string[]>;
+export declare const APPROVAL_ACTIONS: string[];
+export declare const SUPPORTED_DATA_API_PATHS: Set<string>;
