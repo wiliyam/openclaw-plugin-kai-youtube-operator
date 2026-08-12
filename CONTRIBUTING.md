@@ -10,6 +10,8 @@ community contributions.
 - Safer wrappers for official YouTube API endpoints.
 - Better Kai skill instructions.
 - Local media workflows using `ffmpeg`, `ffprobe`, or similarly trusted tools.
+- Modular channel-manager workflows that keep planning/state logic outside the
+  plugin entrypoint.
 - Bug fixes for OAuth, redaction, validation, and approval gates.
 
 ## Before You Start
@@ -48,6 +50,8 @@ require explicit approval through `approved: true`.
 - Plugin validation passes with `npm run plugin:validate`.
 - New public tool names are added to `openclaw.plugin.json`.
 - README and skill instructions are updated for user-visible behavior.
+- Large feature areas live in focused modules instead of being added wholesale
+  to `src/index.ts`.
 - No secrets or private generated files are committed.
 
 ## Reporting Issues

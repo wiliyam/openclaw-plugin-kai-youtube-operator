@@ -25,6 +25,7 @@ Prefer official YouTube APIs and local media tools over browser automation.
 ## Repository Shape
 
 - `src/index.ts`: plugin implementation and exported helper functions.
+- `src/manager.ts`: local channel-manager state and helper functions.
 - `src/index.test.ts`: Vitest coverage for helpers and safety behavior.
 - `openclaw.plugin.json`: plugin metadata and advertised tool contracts.
 - `skills/kai-youtube-operator/SKILL.md`: instructions Kai receives for using
@@ -45,8 +46,8 @@ npm run plugin:validate
 
 When adding a new tool:
 
-1. Add a typed helper where useful.
-2. Add the tool registration in `src/index.ts`.
+1. Add a typed helper in a focused module where useful.
+2. Keep `src/index.ts` focused on tool registration and orchestration.
 3. Add the tool name to `openclaw.plugin.json`.
 4. Update `README.md`.
 5. Update `skills/kai-youtube-operator/SKILL.md`.
@@ -68,3 +69,11 @@ When adding a new tool:
 - Use argument arrays with `spawn`; do not build shell command strings.
 - Refuse to overwrite local output unless `overwrite: true` is present.
 - Generated audio beds should remain synthetic and copyright-safe.
+
+## Channel Manager Guidance
+
+- Keep planning/state logic in `src/manager.ts` or a focused manager module.
+- The local manager store is `~/Kai/youtube/channel-manager.json`.
+- Manager tools do not directly change YouTube; API tools still handle uploads,
+  publishing, live changes, and moderation.
+- Use the approval queue and audit log before public/destructive API actions.

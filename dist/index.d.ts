@@ -1,3 +1,4 @@
+export { buildManagerBrief, buildProductionChecklist, buildUploadPacketFromContent, createApprovalRequest, createDefaultManagerState, resolveApprovalRequest, triageComments, upsertBrandKit, upsertContentItem, } from "./manager.js";
 export type OAuthCapability = "readonly" | "upload" | "live_control" | "analytics" | "monetary_analytics" | "full_channel";
 export type PrivacyStatus = "private" | "unlisted" | "public";
 export type BroadcastStatus = "active" | "all" | "completed" | "upcoming";

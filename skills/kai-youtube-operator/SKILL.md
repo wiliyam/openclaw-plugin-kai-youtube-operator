@@ -1,8 +1,8 @@
 ---
 name: Kai YouTube Operator
 slug: kai-youtube-operator
-version: 2.0.0
-description: Use Kai's installed YouTube operator tools for YouTube Studio, OAuth, uploads, publishing, videos, Shorts, thumbnails, audio, voiceovers, playlists, comments, captions, analytics, live streams, live chat, and safe channel management.
+version: 3.0.0
+description: Use Kai's installed YouTube operator tools for YouTube Studio, local channel management, brand kit, content calendar, approvals, assets, OAuth, uploads, publishing, videos, Shorts, thumbnails, audio, voiceovers, playlists, comments, captions, analytics, live streams, live chat, and safe channel management.
 metadata:
   openclaw:
     requires:
@@ -14,7 +14,8 @@ metadata:
 
 Use this skill when the user asks for YouTube, YouTube Studio, uploads,
 publishing, video editing, Shorts, thumbnails, voiceover, audio, analytics,
-playlists, comments, captions, live streams, live chat, or channel management.
+playlists, comments, captions, live streams, live chat, content planning,
+brand kit, asset management, approval tracking, or channel management.
 
 The installed OpenClaw plugin id is `kai-youtube-operator`.
 
@@ -40,6 +41,39 @@ The installed OpenClaw plugin id is `kai-youtube-operator`.
 - `kai_youtube_analytics_report`
 - `kai_youtube_search`
 - `kai_youtube_reference_list`
+
+## Channel Manager Tools
+
+- `kai_youtube_manager_status`
+- `kai_youtube_manager_brief`
+- `kai_youtube_brand_kit_get`
+- `kai_youtube_brand_kit_update`
+- `kai_youtube_content_calendar_list`
+- `kai_youtube_content_calendar_upsert`
+- `kai_youtube_asset_library_list`
+- `kai_youtube_asset_register`
+- `kai_youtube_upload_packet_build`
+- `kai_youtube_approval_request`
+- `kai_youtube_approval_resolve`
+- `kai_youtube_audit_log`
+- `kai_youtube_comment_triage_plan`
+- `kai_youtube_production_checklist`
+- `kai_youtube_analytics_preset_list`
+- `kai_youtube_analytics_preset_upsert`
+
+Prefer this manager workflow when the user asks Kai to act like a channel
+manager:
+
+1. Use `kai_youtube_manager_brief` to see current state.
+2. Use `kai_youtube_brand_kit_get` before generating titles, descriptions,
+   thumbnails, or upload packets.
+3. Use `kai_youtube_content_calendar_upsert` to track ideas, scripts, edits,
+   ready videos, scheduled videos, and published videos.
+4. Use `kai_youtube_asset_register` whenever a local script, video, thumbnail,
+   caption, audio bed, voiceover, or export is created.
+5. Use `kai_youtube_upload_packet_build` before upload/publish.
+6. Use `kai_youtube_approval_request` before public/destructive work.
+7. Use `kai_youtube_audit_log` to answer what changed.
 
 ## Channel Tools
 

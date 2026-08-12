@@ -5,6 +5,34 @@ import { homedir } from "node:os";
 import path from "node:path";
 import { Type } from "typebox";
 import { defineToolPlugin } from "openclaw/plugin-sdk/tool-plugin";
+import {
+  buildManagerBrief,
+  buildProductionChecklist,
+  buildUploadPacketFromContent,
+  createApprovalRequest,
+  createDefaultManagerState,
+  MANAGER_STATE_PATH,
+  readManagerState,
+  resolveApprovalRequest,
+  triageComments,
+  upsertAnalyticsPreset,
+  upsertAsset,
+  upsertBrandKit,
+  upsertContentItem,
+  writeManagerState,
+} from "./manager.js";
+
+export {
+  buildManagerBrief,
+  buildProductionChecklist,
+  buildUploadPacketFromContent,
+  createApprovalRequest,
+  createDefaultManagerState,
+  resolveApprovalRequest,
+  triageComments,
+  upsertBrandKit,
+  upsertContentItem,
+} from "./manager.js";
 
 const DATA_DIR = path.join(homedir(), "Kai", "youtube");
 const TOKEN_PATH = path.join(DATA_DIR, "oauth-token.json");
@@ -1624,6 +1652,7 @@ const CapabilitySchema = Type.Union([
   Type.Literal("upload"),
   Type.Literal("live_control"),
   Type.Literal("analytics"),
+  Type.Literal("monetary_analytics"),
   Type.Literal("full_channel"),
 ]);
 
@@ -1709,6 +1738,43 @@ const GeneratedAudioStyleSchema = Type.Union([
   Type.Literal("silence"),
 ]);
 
+const ContentFormatSchema = Type.Union([
+  Type.Literal("short"),
+  Type.Literal("long"),
+  Type.Literal("live"),
+  Type.Literal("community"),
+  Type.Literal("clip"),
+]);
+
+const ContentStatusSchema = Type.Union([
+  Type.Literal("idea"),
+  Type.Literal("script"),
+  Type.Literal("recording"),
+  Type.Literal("editing"),
+  Type.Literal("review"),
+  Type.Literal("ready"),
+  Type.Literal("scheduled"),
+  Type.Literal("published"),
+  Type.Literal("archived"),
+]);
+
+const AssetTypeSchema = Type.Union([
+  Type.Literal("video"),
+  Type.Literal("thumbnail"),
+  Type.Literal("audio"),
+  Type.Literal("voiceover"),
+  Type.Literal("caption"),
+  Type.Literal("script"),
+  Type.Literal("export"),
+  Type.Literal("other"),
+]);
+
+const ApprovalResolutionSchema = Type.Union([
+  Type.Literal("approved"),
+  Type.Literal("rejected"),
+  Type.Literal("cancelled"),
+]);
+
 export default defineToolPlugin({
   id: "kai-youtube-operator",
   name: "Kai YouTube Operator",
@@ -1758,6 +1824,252 @@ export default defineToolPlugin({
       description: "List what YouTube Studio work this plugin can do through official APIs and where manual Studio is still needed.",
       parameters: Type.Object({}),
       execute: async () => studioCapabilities(),
+    }),
+    tool({
+      name: "kai_youtube_manager_status",
+      description: "Read Kai's local channel-manager state summary.",
+      parameters: Type.Object({}),
+      execute: async () => {
+        const state = await readManagerState();
+        return {
+          statePath: MANAGER_STATE_PATH,
+          brief: buildManagerBrief(state),
+        };
+      },
+    }),
+    tool({
+      name: "kai_youtube_brand_kit_get",
+      description: "Read Kai's saved channel brand kit.",
+      parameters: Type.Object({}),
+      execute: async () => (await readManagerState()).brandKit,
+    }),
+    tool({
+      name: "kai_youtube_brand_kit_update",
+      description: "Update Kai's local channel brand kit and upload defaults.",
+      parameters: Type.Object({
+        channelName: Type.Optional(Type.String()),
+        voice: Type.Optional(Type.String()),
+        audience: Type.Optional(Type.String()),
+        styleNotes: Type.Optional(Type.Array(Type.String())),
+        defaultHashtags: Type.Optional(Type.Array(Type.String())),
+        defaultTags: Type.Optional(Type.Array(Type.String())),
+        titlePatterns: Type.Optional(Type.Array(Type.String())),
+        thumbnailRules: Type.Optional(Type.Array(Type.String())),
+        descriptionTemplate: Type.Optional(Type.String()),
+        pinnedCommentTemplate: Type.Optional(Type.String()),
+        uploadDefaults: Type.Optional(Type.Object({
+          privacyStatus: Type.Optional(PrivacySchema),
+          categoryId: Type.Optional(Type.String()),
+          defaultLanguage: Type.Optional(Type.String()),
+          defaultAudioLanguage: Type.Optional(Type.String()),
+          license: Type.Optional(LicenseSchema),
+          embeddable: Type.Optional(Type.Boolean()),
+          publicStatsViewable: Type.Optional(Type.Boolean()),
+          selfDeclaredMadeForKids: Type.Optional(Type.Boolean()),
+        })),
+      }),
+      execute: async (params) => {
+        const state = await readManagerState();
+        const next = upsertBrandKit(state, params);
+        await writeManagerState(next);
+        return next.brandKit;
+      },
+    }),
+    tool({
+      name: "kai_youtube_content_calendar_list",
+      description: "List Kai's local content calendar items with optional status/format filters.",
+      parameters: Type.Object({
+        status: Type.Optional(ContentStatusSchema),
+        format: Type.Optional(ContentFormatSchema),
+        limit: Type.Optional(Type.Number()),
+      }),
+      execute: async ({ status, format, limit = 50 }) => {
+        const state = await readManagerState();
+        return state.contentItems
+          .filter((item) => !status || item.status === status)
+          .filter((item) => !format || item.format === format)
+          .slice(0, limit);
+      },
+    }),
+    tool({
+      name: "kai_youtube_content_calendar_upsert",
+      description: "Create or update a local content calendar item.",
+      parameters: Type.Object({
+        id: Type.Optional(Type.String()),
+        title: Type.Optional(Type.String()),
+        format: Type.Optional(ContentFormatSchema),
+        status: Type.Optional(ContentStatusSchema),
+        summary: Type.Optional(Type.String()),
+        scheduledFor: Type.Optional(Type.String()),
+        playlistUrl: Type.Optional(Type.String()),
+        tags: Type.Optional(Type.Array(Type.String())),
+        sourcePaths: Type.Optional(Type.Array(Type.String())),
+        outputPaths: Type.Optional(Type.Array(Type.String())),
+        thumbnailPath: Type.Optional(Type.String()),
+        scriptPath: Type.Optional(Type.String()),
+        captionPath: Type.Optional(Type.String()),
+        audioPath: Type.Optional(Type.String()),
+        voiceoverPath: Type.Optional(Type.String()),
+        videoId: Type.Optional(Type.String()),
+        liveBroadcastId: Type.Optional(Type.String()),
+        notes: Type.Optional(Type.String()),
+      }),
+      execute: async (params) => {
+        const state = await readManagerState();
+        const result = upsertContentItem(state, params);
+        await writeManagerState(result.state);
+        return result.item;
+      },
+    }),
+    tool({
+      name: "kai_youtube_asset_library_list",
+      description: "List Kai's local asset library with optional content/type filters.",
+      parameters: Type.Object({
+        contentId: Type.Optional(Type.String()),
+        type: Type.Optional(AssetTypeSchema),
+        limit: Type.Optional(Type.Number()),
+      }),
+      execute: async ({ contentId, type, limit = 50 }) => {
+        const state = await readManagerState();
+        return state.assets
+          .filter((asset) => !contentId || asset.contentId === contentId)
+          .filter((asset) => !type || asset.type === type)
+          .slice(0, limit);
+      },
+    }),
+    tool({
+      name: "kai_youtube_asset_register",
+      description: "Register a local script, video, thumbnail, caption, audio, voiceover, or export asset.",
+      parameters: Type.Object({
+        id: Type.Optional(Type.String()),
+        type: Type.Optional(AssetTypeSchema),
+        path: Type.String(),
+        title: Type.Optional(Type.String()),
+        contentId: Type.Optional(Type.String()),
+        status: Type.Optional(Type.Union([
+          Type.Literal("available"),
+          Type.Literal("draft"),
+          Type.Literal("final"),
+          Type.Literal("archived"),
+        ])),
+        notes: Type.Optional(Type.String()),
+      }),
+      execute: async (params) => {
+        const state = await readManagerState();
+        const result = upsertAsset(state, params);
+        await writeManagerState(result.state);
+        return result.asset;
+      },
+    }),
+    tool({
+      name: "kai_youtube_upload_packet_build",
+      description: "Build a YouTube upload packet from a saved content item and brand kit.",
+      parameters: Type.Object({
+        contentId: Type.String(),
+        title: Type.Optional(Type.String()),
+        titleVariants: Type.Optional(Type.Array(Type.String())),
+        description: Type.Optional(Type.String()),
+        tags: Type.Optional(Type.Array(Type.String())),
+        filePath: Type.Optional(Type.String()),
+        thumbnailPath: Type.Optional(Type.String()),
+        privacyStatus: Type.Optional(PrivacySchema),
+        categoryId: Type.Optional(Type.String()),
+        pinnedComment: Type.Optional(Type.String()),
+      }),
+      execute: async ({ contentId, ...overrides }) => buildUploadPacketFromContent(await readManagerState(), contentId, overrides),
+    }),
+    tool({
+      name: "kai_youtube_approval_request",
+      description: "Create a local approval request for a future channel action.",
+      parameters: Type.Object({
+        id: Type.Optional(Type.String()),
+        action: Type.String(),
+        targetType: Type.String(),
+        targetId: Type.Optional(Type.String()),
+        summary: Type.String(),
+        notes: Type.Optional(Type.String()),
+      }),
+      execute: async (params) => {
+        const state = await readManagerState();
+        const result = createApprovalRequest(state, params);
+        await writeManagerState(result.state);
+        return result.request;
+      },
+    }),
+    tool({
+      name: "kai_youtube_approval_resolve",
+      description: "Resolve a local approval request after the owner approves, rejects, or cancels it.",
+      parameters: Type.Object({
+        id: Type.String(),
+        status: ApprovalResolutionSchema,
+        actor: Type.Optional(Type.String()),
+        notes: Type.Optional(Type.String()),
+      }),
+      execute: async ({ id, status, actor, notes }) => {
+        const state = await readManagerState();
+        const result = resolveApprovalRequest(state, id, status, actor ?? "owner", undefined, notes);
+        await writeManagerState(result.state);
+        return result.request;
+      },
+    }),
+    tool({
+      name: "kai_youtube_audit_log",
+      description: "Read Kai's local YouTube manager audit log.",
+      parameters: Type.Object({
+        limit: Type.Optional(Type.Number()),
+      }),
+      execute: async ({ limit = 50 }) => (await readManagerState()).auditLog.slice(-limit).reverse(),
+    }),
+    tool({
+      name: "kai_youtube_comment_triage_plan",
+      description: "Triage comment text locally using saved channel-manager moderation rules.",
+      parameters: Type.Object({
+        comments: Type.Array(Type.Object({
+          id: Type.String(),
+          author: Type.Optional(Type.String()),
+          text: Type.String(),
+        })),
+      }),
+      execute: async ({ comments }) => triageComments(await readManagerState(), comments),
+    }),
+    tool({
+      name: "kai_youtube_production_checklist",
+      description: "Build a local production checklist for a saved content item.",
+      parameters: Type.Object({
+        contentId: Type.String(),
+      }),
+      execute: async ({ contentId }) => buildProductionChecklist(await readManagerState(), contentId),
+    }),
+    tool({
+      name: "kai_youtube_manager_brief",
+      description: "Build a channel-manager daily brief from Kai's local manager state.",
+      parameters: Type.Object({}),
+      execute: async () => buildManagerBrief(await readManagerState()),
+    }),
+    tool({
+      name: "kai_youtube_analytics_preset_list",
+      description: "List saved analytics report presets.",
+      parameters: Type.Object({}),
+      execute: async () => (await readManagerState()).analyticsPresets,
+    }),
+    tool({
+      name: "kai_youtube_analytics_preset_upsert",
+      description: "Create or update a saved analytics report preset.",
+      parameters: Type.Object({
+        id: Type.Optional(Type.String()),
+        title: Type.String(),
+        metrics: Type.String(),
+        dimensions: Type.Optional(Type.String()),
+        filters: Type.Optional(Type.String()),
+        sort: Type.Optional(Type.String()),
+        notes: Type.Optional(Type.String()),
+      }),
+      execute: async (params) => {
+        const state = await readManagerState();
+        const result = upsertAnalyticsPreset(state, params);
+        await writeManagerState(result.state);
+        return result.preset;
+      },
     }),
     tool({
       name: "kai_youtube_data_api_request",

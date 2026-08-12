@@ -31,6 +31,9 @@ docs fixes, and pull requests are welcome.
 - Mix/replace/duck audio in a video locally.
 - Create a Short and upload it in one approved workflow.
 - Call allowlisted YouTube Data API endpoints through a guarded generic tool.
+- Maintain a local channel-manager system with brand kit, content calendar,
+  asset library, upload packets, approval queue, audit log, analytics presets,
+  comment triage, daily brief, and production checklists.
 
 Some YouTube Studio screens are not exposed by public APIs. Monetization setup,
 some copyright workflows, account security settings, and some dashboard-only UI
@@ -131,6 +134,27 @@ If you add new tools that need a new scope, update `YOUTUBE_SCOPES` in
 - `kai_youtube_search`: search videos, channels, and playlists.
 - `kai_youtube_reference_list`: list categories, regions, languages, and abuse
   report reasons.
+
+### Channel Manager
+
+- `kai_youtube_manager_status`: read local channel-manager state summary.
+- `kai_youtube_manager_brief`: generate a daily-style channel brief.
+- `kai_youtube_brand_kit_get`: read the saved brand kit.
+- `kai_youtube_brand_kit_update`: update brand voice, defaults, templates, and upload defaults.
+- `kai_youtube_content_calendar_list`: list planned content.
+- `kai_youtube_content_calendar_upsert`: create or update a content item.
+- `kai_youtube_asset_library_list`: list local assets.
+- `kai_youtube_asset_register`: register scripts, videos, thumbnails, captions, audio, or exports.
+- `kai_youtube_upload_packet_build`: build a title/description/tags/upload packet from brand kit and content state.
+- `kai_youtube_approval_request`: create a local approval request.
+- `kai_youtube_approval_resolve`: mark a local approval request approved/rejected/cancelled.
+- `kai_youtube_audit_log`: read the local manager audit log.
+- `kai_youtube_comment_triage_plan`: triage comments using local moderation rules.
+- `kai_youtube_production_checklist`: build a checklist for a content item.
+- `kai_youtube_analytics_preset_list`: list saved analytics presets.
+- `kai_youtube_analytics_preset_upsert`: create or update analytics presets.
+
+Manager state is stored locally at `~/Kai/youtube/channel-manager.json`.
 
 ### Channel
 
@@ -298,6 +322,15 @@ npm run plugin:build
 
 The repo intentionally includes `dist/` because OpenClaw git installs need the
 built entrypoint.
+
+## Code Structure
+
+- `src/index.ts`: OpenClaw tool registration and YouTube API-facing orchestration.
+- `src/manager.ts`: local channel-manager state, brand kit, calendar, approvals,
+  upload packets, audit log, comment triage, and checklists.
+- `src/index.test.ts`: unit tests for exported helpers and safety behavior.
+
+New large features should be added as modules instead of growing `index.ts`.
 
 ## Contributing
 
